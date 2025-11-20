@@ -156,3 +156,8 @@ footer {
         height: 38px;
     }
 }
+
+.btn-group .btn.active {
+    background-color: var(--text-dark);
+    color: #fff;
+}
