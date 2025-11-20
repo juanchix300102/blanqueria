@@ -60,7 +60,7 @@ const state = {
   isOwner: localStorage.getItem(STORAGE_OWNER) === 'true',
 };
 
-// Referencias DOM
+// Referencias DOM (pueden ser null según la página)
 const productList = document.getElementById('product-list');
 const productCount = document.getElementById('product-count');
 const productForm = document.getElementById('product-form');
@@ -77,7 +77,7 @@ const statValue = document.getElementById('stat-value');
 
 const yearEl = document.getElementById('year');
 
-// Login dueño
+// Login dueño (solo existe en admin.html)
 const btnOwnerLogin = document.getElementById('btn-owner-login');
 const btnOwnerLogout = document.getElementById('btn-owner-logout');
 const loginOverlay = document.getElementById('owner-login-overlay');
@@ -117,10 +117,12 @@ const updateOwnerUI = () => {
 
 // Render catálogo
 const renderProducts = () => {
+  if (!productList) return; // página que no tiene catálogo
+
   if (!state.products.length) {
     productList.innerHTML =
-      '<div class="col"><div class="alert alert-info mb-0">No hay productos cargados. Agregá el primero desde el panel administrador.</div></div>';
-    productCount.textContent = '0 productos';
+      '<div class="col"><div class="alert alert-info mb-0">No hay productos cargados.</div></div>';
+    if (productCount) productCount.textContent = '0 productos';
     return;
   }
 
@@ -161,13 +163,17 @@ const renderProducts = () => {
     })
     .join('');
 
-  productCount.textContent = `${state.products.length} ${
-    state.products.length === 1 ? 'producto' : 'productos'
-  }`;
+  if (productCount) {
+    productCount.textContent = `${state.products.length} ${
+      state.products.length === 1 ? 'producto' : 'productos'
+    }`;
+  }
 };
 
 // Render carrito
 const renderCart = () => {
+  if (!cartItems || !cartTotal || !cartCount || !emptyCart) return;
+
   if (!state.cart.length) {
     cartItems.innerHTML = '';
     emptyCart.classList.remove('d-none');
@@ -317,7 +323,7 @@ const clearCart = () => {
 
 // EVENTOS
 
-// Formulario producto
+// Formulario producto (solo admin.html)
 if (productForm) {
   productForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -391,21 +397,23 @@ if (checkoutBtn) {
   checkoutBtn.addEventListener('click', () => {
     if (!state.cart.length) return;
 
-    checkoutAlert.classList.remove('d-none');
-    setTimeout(() => checkoutAlert.classList.add('d-none'), 2500);
+    if (checkoutAlert) {
+      checkoutAlert.classList.remove('d-none');
+      setTimeout(() => checkoutAlert.classList.add('d-none'), 2500);
+    }
 
     clearCart();
   });
 }
 
-// Login dueño
+// Login dueño (solo admin.html)
 const openLoginOverlay = () => {
   if (!loginOverlay) return;
   loginOverlay.classList.remove('d-none');
-  loginError.classList.add('d-none');
-  loginUsername.value = '';
-  loginPassword.value = '';
-  loginUsername.focus();
+  if (loginError) loginError.classList.add('d-none');
+  if (loginUsername) loginUsername.value = '';
+  if (loginPassword) loginPassword.value = '';
+  if (loginUsername) loginUsername.focus();
 };
 
 const closeLoginOverlay = () => {
@@ -441,7 +449,7 @@ if (loginForm) {
       persistState();
       closeLoginOverlay();
       updateOwnerUI();
-    } else {
+    } else if (loginError) {
       loginError.classList.remove('d-none');
     }
   });

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Tejidos de Ensueño</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- NAVBAR ADMIN -->
+    <nav class="navbar navbar-expand-lg shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <img src="logo.png" alt="Tejidos de Ensueño" class="brand-logo" loading="lazy">
+                <span class="fw-semibold">Panel dueño</span>
+            </a>
+
+            <div class="ms-auto d-flex gap-2 align-items-center">
+                <a class="btn btn-outline-dark btn-sm" href="index.html">Ver sitio público</a>
+                <button id="btn-owner-login" class="btn btn-outline-secondary btn-sm">
+                    Iniciar sesión
+                </button>
+                <button id="btn-owner-logout" class="btn btn-outline-secondary btn-sm d-none">
+                    Cerrar sesión
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-5">
+        <!-- INFO -->
+        <section class="mb-4">
+            <h1 class="h3 mb-2">Administración de catálogo</h1>
+            <p class="text-muted mb-0">
+                Iniciá sesión como dueño para agregar productos, ver resumen de stock y eliminar artículos.
+            </p>
+        </section>
+
+        <!-- CATÁLOGO (MISMOS PRODUCTOS) -->
+        <section id="catalogo" class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <div>
+                    <h2 class="section-title mb-1">Catálogo actual</h2>
+                    <p class="text-muted mb-0">Estos son los productos visibles en la tienda.</p>
+                </div>
+                <span id="product-count" class="text-muted"></span>
+            </div>
+            <div id="product-list" class="row g-4"></div>
+        </section>
+
+        <!-- ADMIN + CARRITO -->
+        <section id="administracion" class="mb-5">
+            <div class="row g-4">
+                <!-- PANEL ADMIN (SOLO DUEÑO) -->
+                <div class="col-lg-6 owner-only d-none">
+                    <div class="card admin-card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="section-title h4 mb-3">Agregar producto</h2>
+                            <form id="product-form" class="needs-validation" novalidate>
+                                <div class="mb-3">
+                                    <label for="productName" class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" id="productName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="productDescription" class="form-label">Descripción</label>
+                                    <textarea class="form-control" id="productDescription" rows="2" required></textarea>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <label for="productPrice" class="form-label">Precio (ARS)</label>
+                                        <input type="number" class="form-control" id="productPrice" min="0" step="0.01" required>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="productStock" class="form-label">Stock</label>
+                                        <input type="number" class="form-control" id="productStock" min="0" step="1" required>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <label for="productImage" class="form-label">URL de imagen (opcional)</label>
+                                    <input type="url" class="form-control" id="productImage" placeholder="https://">
+                                </div>
+                                <div class="d-flex gap-3 mt-4">
+                                    <button type="reset" class="btn btn-outline-secondary flex-fill">Limpiar</button>
+                                    <button type="submit" class="btn btn-primary flex-fill">Guardar producto</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARRITO (para que el dueño vea pedidos) -->
+                <div class="col-lg-6">
+                    <div class="card cart-card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                                <div>
+                                    <h2 class="section-title h4 mb-1">Carrito (estado actual)</h2>
+                                    <p class="text-muted mb-0">Visualización del carrito del cliente en este navegador.</p>
+                                </div>
+                                <span class="badge bg-primary" id="cart-count">0 artículos</span>
+                            </div>
+
+                            <ul class="list-group list-group-flush mb-3" id="cart-items"></ul>
+                            <div id="empty-cart" class="text-center text-muted py-3">
+                                Todavía no hay productos en el carrito.
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <strong>Total:</strong>
+                                <span class="fs-4 text-primary" id="cart-total">$0</span>
+                            </div>
+
+                            <div class="d-flex gap-3 flex-wrap">
+                                <button id="clear-cart" class="btn btn-outline-secondary flex-fill" type="button">Vaciar</button>
+                                <button id="checkout" class="btn btn-success flex-fill" type="button">Marcar como vendido</button>
+                            </div>
+
+                            <div id="checkout-alert" class="alert alert-success mt-3 d-none" role="alert">
+                                Operación registrada 👌
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESUMEN ADMIN (SOLO DUEÑO) -->
+        <section class="mb-4 owner-only d-none">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="section-title h4 mb-3">Resumen de stock</h2>
+                    <div class="row text-center gy-3">
+                        <div class="col-12 col-md-4">
+                            <h3 class="h1 text-primary mb-1" id="stat-products">0</h3>
+                            <p class="text-muted mb-0">Productos publicados</p>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <h3 class="h1 text-primary mb-1" id="stat-stock">0</h3>
+                            <p class="text-muted mb-0">Unidades disponibles</p>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <h3 class="h1 text-primary mb-1" id="stat-value">$0</h3>
+                            <p class="text-muted mb-0">Valor estimado</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-4 text-center text-muted">
+        &copy; <span id="year"></span> Tejidos de Ensueño · Panel dueño
+    </footer>
+
+    <!-- LOGIN DUEÑO -->
+    <div id="owner-login-overlay" class="login-overlay d-none">
+        <div class="login-card">
+            <h2 class="h4 mb-3 text-center">Acceso para el dueño</h2>
+            <p class="text-muted small mb-3 text-center">
+                Ingresá con tu usuario y contraseña para administrar el catálogo.
+            </p>
+            <form id="login-form">
+                <div class="mb-3">
+                    <label for="login-username" class="form-label">Usuario</label>
+                    <input type="text" id="login-username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="login-password" class="form-label">Contraseña</label>
+                    <input type="password" id="login-password" class="form-control" required>
+                </div>
+                <div class="d-flex gap-2 mt-2">
+                    <button type="button" id="login-cancel" class="btn btn-outline-secondary w-50">Cancelar</button>
+                    <button type="submit" class="btn btn-primary w-50">Ingresar</button>
+                </div>
+                <div id="login-error" class="text-danger small mt-2 d-none">
+                    Usuario o contraseña incorrectos.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js" defer></script>
+</body>
+</html>
