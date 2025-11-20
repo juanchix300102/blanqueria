@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tejido de Sueños · Blanquería</title>
-
-    <!-- Fuentes y Bootstrap -->
+    <title>Tejidos de Ensueño · Blanquería</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Estilos propios -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,24 +15,21 @@
     <nav class="navbar navbar-expand-lg shadow-sm py-3">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-                <img src="logo.png" alt="Tejido de Sueños" class="brand-logo" loading="lazy">
-                <span class="visually-hidden">Tejido de Sueños</span>
+                <img src="logo.png" alt="Tejidos de Ensueño" class="brand-logo" loading="lazy">
+                <span class="visually-hidden">Tejidos de Ensueño</span>
             </a>
 
-            <div class="d-flex gap-3 align-items-center">
-                <!-- Selector de modo -->
-                <div class="btn-group btn-group-sm" role="group" aria-label="Modo de vista">
-                    <button id="btn-buyer" type="button" class="btn btn-outline-dark active">
-                        Comprador
-                    </button>
-                    <button id="btn-owner" type="button" class="btn btn-outline-dark">
-                        Dueño
-                    </button>
-                </div>
-
-                <!-- Links rápidos -->
+            <div class="ms-auto d-flex gap-2 align-items-center">
                 <a class="btn btn-outline-dark" href="#catalogo">Catálogo</a>
                 <a class="btn btn-primary" href="#carrito">Ver carrito</a>
+
+                <!-- Botones dueño -->
+                <button id="btn-owner-login" class="btn btn-outline-secondary btn-sm">
+                    Dueño
+                </button>
+                <button id="btn-owner-logout" class="btn btn-outline-secondary btn-sm d-none">
+                    Cerrar sesión
+                </button>
             </div>
         </div>
     </nav>
@@ -46,7 +39,7 @@
         <section class="hero p-5 mb-5 row g-4 align-items-center">
             <div class="col-lg-7">
                 <span class="badge badge-soft mb-3">Edredones · Sábanas · Accesorios</span>
-                <h1 class="display-5 fw-bold text-primary mb-3">Tejido de Sueños</h1>
+                <h1 class="display-5 fw-bold text-primary mb-3">Tejidos de Ensueño</h1>
                 <p class="lead text-muted mb-4">
                     Administrá tu catálogo de blanquería y permití que tus clientes armen su carrito
                     de forma simple y rápida, desde el mismo sistema.
@@ -58,7 +51,7 @@
             </div>
             <div class="col-lg-5 text-center">
                 <div class="hero-logo-card mb-4">
-                    <img src="logo.png" alt="Isotipo Tejido de Sueños" class="hero-logo" loading="lazy">
+                    <img src="logo.png" alt="Isotipo Tejidos de Ensueño" class="hero-logo" loading="lazy">
                     <p class="text-muted mb-0 mt-3">Blanquería artesanal para camas soñadas.</p>
                 </div>
                 <img
@@ -81,10 +74,10 @@
         </section>
 
         <!-- ADMIN + CARRITO -->
-        <section id="administracion" class="mb-5 owner-only">
+        <section id="administracion" class="mb-5">
             <div class="row g-4">
-                <!-- Panel administrador (DUEÑO) -->
-                <div class="col-lg-6">
+                <!-- PANEL ADMIN (SOLO DUEÑO) -->
+                <div class="col-lg-6 owner-only">
                     <div class="card admin-card shadow-sm">
                         <div class="card-body">
                             <h2 class="section-title h4 mb-3">Agregar producto</h2>
@@ -120,9 +113,9 @@
                     </div>
                 </div>
 
-                <!-- Carrito (COMPRADOR) -->
+                <!-- CARRITO (TODOS LO VEN) -->
                 <div class="col-lg-6">
-                    <div class="card cart-card shadow-sm buyer-only" id="carrito">
+                    <div class="card cart-card shadow-sm" id="carrito">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                                 <div>
@@ -156,7 +149,7 @@
             </div>
         </section>
 
-        <!-- RESUMEN ADMIN (solo DUEÑO) -->
+        <!-- RESUMEN ADMIN (SOLO DUEÑO) -->
         <section class="mb-4 owner-only">
             <div class="card shadow-sm">
                 <div class="card-body">
@@ -172,7 +165,7 @@
                         </div>
                         <div class="col-12 col-md-4">
                             <h3 class="h1 text-primary mb-1" id="stat-value">$0</h3>
-                            <p class="text-muted mb-0">Valor estimado de stock</p>
+                            <p class="text-muted mb-0">Valor estimado</p>
                         </div>
                     </div>
                 </div>
@@ -181,8 +174,35 @@
     </main>
 
     <footer class="py-4 text-center text-muted">
-        &copy; <span id="year"></span> Tejido de Sueños · Blanquería artesanal
+        &copy; <span id="year"></span> Tejidos de Ensueño · Blanquería artesanal
     </footer>
+
+    <!-- LOGIN DUEÑO -->
+    <div id="owner-login-overlay" class="login-overlay d-none">
+        <div class="login-card">
+            <h2 class="h4 mb-3 text-center">Acceso para el dueño</h2>
+            <p class="text-muted small mb-3 text-center">
+                Ingresá con tu usuario y contraseña para administrar el catálogo.
+            </p>
+            <form id="login-form">
+                <div class="mb-3">
+                    <label for="login-username" class="form-label">Usuario</label>
+                    <input type="text" id="login-username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="login-password" class="form-label">Contraseña</label>
+                    <input type="password" id="login-password" class="form-control" required>
+                </div>
+                <div class="d-flex gap-2 mt-2">
+                    <button type="button" id="login-cancel" class="btn btn-outline-secondary w-50">Cancelar</button>
+                    <button type="submit" class="btn btn-primary w-50">Ingresar</button>
+                </div>
+                <div id="login-error" class="text-danger small mt-2 d-none">
+                    Usuario o contraseña incorrectos.
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="app.js" defer></script>
 </body>
